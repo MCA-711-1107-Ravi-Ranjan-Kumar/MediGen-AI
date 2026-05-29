@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | MediGen-AI{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+<a href="/admin" class="nav-item active" style="background:#0f766e;color:white;border-radius:10px;"><span class="icon">📊</span> Dashboard</a>&NonBreakingSpace;
+<a href="/admin/register-doctor" class="nav-item" style="background:#0f766e;color:white;border-radius:10px;"><span class="icon">➕</span> <strong>Add Doctor/Staff</strong></a>
+{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-num">{{ doctors|length }}</div>
+        <div class="stat-label">👨‍⚕️ Doctors</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ staff|length }}</div>
+        <div class="stat-label">👩‍💼 Medical Staff</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ patients|length }}</div>
+        <div class="stat-label">🤒 Patients</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ prescriptions|length }}</div>
+        <div class="stat-label">📋 Prescriptions</div>
+    </div>
+</div>
+<!-- STAFF -->
+<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+        <div class="card-title" style="margin-bottom:0">👩‍💼 Medical Staff</div>
+        <a href="/admin/register-doctor" class="btn btn-outline btn-sm" style="background:#0f766e;color:white;border-radius:10px;">+ Add Staff</a>
+    </div>
+    {% if staff %}
+    <table>
+        <thead>
+            <tr>
+                <th>Login ID</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in staff %}
+            <tr>
+                <td><span class="badge badge-amber">{{ s.login_id }}</span></td>
+                <td>
+                    <span class="pwd-mask" id="pwd-s-{{ s.id }}" style="font-family:monospace;letter-spacing:2px">••••••••</span>
+                    <span class="pwd-plain" id="pwdp-s-{{ s.id }}" style="display:none;font-family:monospace;color:#99f6e4">{{ s.plain_password or '(set at registration)' }}</span>
+                    <button onclick="togglePwd('s-{{ s.id }}')" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.8rem;margin-left:4px">👁️</button>
+                </td>
+                <td>{{ s.name }}</td>
+                <td>{{ s.mobile or '—' }}</td>
+               <td>
+
+    <a href="/admin/edit-user/{{ s.id }}"
+       class="btn btn-outline btn-sm">
+       ✏️ Edit
+    </a>
+    <a href="/admin/delete-user/{{ s.id }}"
+       class="btn btn-danger btn-sm"
+       onclick="return confirm('Delete this staff permanently?')">
+     🗑️ Delete
+    </a>
+</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><div class="icon">👩‍💼</div><p>No staff registered yet.</p></div>
+    {% endif %}
+</div>
+<!-- DOCTORS -->
+<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+        <div class="card-title" style="margin-bottom:0">👨‍⚕️ Registered Doctors</div>
+        <a href="/admin/register-doctor" class="btn btn-primary btn-sm">+ Add Doctor</a>
+    </div>
+    {% if doctors %}
+    <table>
+        <thead>
+            <tr>
+                <th>Login ID</th>
+                <th>Password</th>
+                <th>Name</th>
+                <th>Qualification</th>
+                <th>Mobile</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in doctors %}
+            <tr>
+                <td><span class="badge badge-teal">{{ d.login_id }}</span></td>
+                <td>
+                    <span class="pwd-mask" id="pwd-d-{{ d.id }}" style="font-family:monospace;letter-spacing:2px">••••••••</span>
+                    <span class="pwd-plain" id="pwdp-d-{{ d.id }}" style="display:none;font-family:monospace;color:#99f6e4">{{ d.plain_password or '(set at registration)' }}</span>
+                    <button onclick="togglePwd('d-{{ d.id }}')" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:0.8rem;margin-left:4px">👁️</button>
+                </td>
+                <td>{{ d.name }}</td>
+                <td>{{ d.qualification or '—' }}</td>
+                <td>{{ d.mobile or '—' }}</td>
+                <td>
+
+                <a href="/admin/edit-user/{{ d.id }}"
+                class="btn btn-outline btn-sm">
+                ✏️ Edit
+            </a>
+                <a href="/admin/delete-user/{{ d.id }}" class="btn btn-danger btn-sm"
+                onclick="return confirm('Delete this doctor permanently?')">
+                🗑️ Delete
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><div class="icon">👨‍⚕️</div><p>No doctors registered yet.</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePwd(id) {
+    const mask = document.getElementById('pwd-' + id);
+    const plain = document.getElementById('pwdp-' + id);
+    if (mask.style.display === 'none') {
+        mask.style.display = ''; plain.style.display = 'none';
+    } else {
+        mask.style.display = 'none'; plain.style.display = '';
+    }
+}
+</script>
+<style>
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+table td,
+table th{
+    white-space:nowrap;
+    vertical-align:middle;
+    padding:14px;
+}
+</style>
+{% endblock %}

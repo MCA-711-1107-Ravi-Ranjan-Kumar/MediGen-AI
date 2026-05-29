@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Dashboard | MediGen-AI{% endblock %}
+{% block page_title %}Doctor Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+
+<a href="/doctor" class="nav-item active"style="background:#0f766e;color:white;border-radius:10px;>
+    <span class="icon">📊</span> Dashboard
+</a><br>
+
+<a href="/staff/register-patient"
+   class="nav-item"
+   style="background:#0f766e;color:white;border-radius:10px;">
+
+   <span class="icon">➕</span> Register Patient
+
+</a>
+
+{% endblock %}
+
+{% block content %}
+<style>
+#patient-table {
+    width: 100%;
+    font-size: 10px;
+}
+#patient-table th,
+#patient-table td {
+    padding: 4px;
+    white-space: nowrap;
+    text-align: center;
+}
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 11px;
+}
+</style>
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-num">{{ patients|length }}</div>
+        <div class="stat-label">🤒 Total Patients</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ prescriptions|length }}</div>
+        <div class="stat-label">📋 My Prescriptions</div>
+    </div>
+</div>
+<!-- Online Patient Search -->
+<!-- Online Patient Search -->
+<div class="card" style="
+margin-bottom:1.5rem;
+background:linear-gradient(135deg,#0f172a,#111827);
+border:1px solid rgba(45,212,191,.15);
+">
+
+    <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1rem;
+    width:100%;
+    ">
+
+        <!-- LEFT SIDE -->
+        <div>
+            <div class="card-title" style="margin-bottom:4px;">
+                🌐 Online Patient Search
+            </div>
+
+            <div style="
+            font-size:13px;
+            color:rgba(255,255,255,.5);
+            ">
+                Search online registered patient by Patient ID
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE SEARCH -->
+        <div style="
+        margin-left:auto;
+        display:flex;
+        justify-content:flex-end;
+        ">
+
+            <form method="GET"
+                  action="/doctor/search-online-patient"
+                  style="
+                  display:flex;
+                  gap:.5rem;
+                  align-items:center;
+                  ">
+
+                <input type="text"
+                       name="patient_id"
+                       placeholder="Enter Online Patient ID"
+                       required
+                       style="
+                       width:240px;
+                       background:rgba(255,255,255,.06);
+                       border:1px solid rgba(255,255,255,.08);
+                       color:white;
+                       border-radius:10px;
+                       padding:.7rem 1rem;
+                       ">
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        style="
+                        padding:.7rem 1rem;
+                        white-space:nowrap;
+                        ">
+
+                    🔎 Search
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+{% if online_patient %}
+
+<div class="card" style="
+margin-bottom:1.5rem;
+border:1px solid rgba(45,212,191,.2);
+background:linear-gradient(135deg,#0f172a,#111827);
+">
+
+    <div class="card-title">
+        🌐 Online Patient Found
+    </div>
+
+    <table id="patient-table">
+
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Age</th>
+                <th>Weight</th>
+                <th>Mobile</th>
+                <th>Email</th>
+                <th>ABHA Address</th>
+                <th>Address</th>
+                <th>Symptoms</th>
+                <th>Department</th>
+                <th>Doctor Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>
+                    <span class="badge badge-green">
+                        {{ online_patient.patient_id }}
+                    </span>
+                </td>
+
+                <td>{{ online_patient.name }}</td>
+
+                <td>{{ online_patient.gender or '—' }}</td>
+
+                <td>{{ online_patient.age or '—' }}</td>
+
+                <td>{{ online_patient.weight or '—' }}</td>
+
+                <td>{{ online_patient.mobile or '—' }}</td>
+
+                <td>{{ online_patient.email or '—' }}</td>
+
+                <td>{{ online_patient.symptoms or '—' }}</td>
+
+                <td>
+                    {{ online_patient.suggested_department or '—' }}
+                </td>
+
+                <td>
+                    {{ online_patient.suggested_doctor_type or '—' }}
+                </td>
+
+                <td>
+
+                    <a href="/doctor/write-online-prescription/{{ online_patient.patient_id }}"
+                       class="btn btn-primary btn-sm">
+
+                       📝 Write Prescription
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+{% endif %}
+
+<!-- Patient Queue -->
+<div class="card"style="max-width:100%;
+            margin:auto;
+            padding:10px;">
+    <div class="card-title">🤒 Patient Queue — Write Prescription</div>
+    
+    
+    
+    {% if patients %}
+    <table id="patient-table">
+        <thead>
+    <tr>
+        <th>Patient ID</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Weight</th>
+        <th>Mobile</th>
+        <th>Email</th>
+        <th>ABHA Address</th>
+        <th>Address</th>
+        <th>Action</th>
+    </tr>
+        </thead>
+        <tbody>
+            {% for p in patients %}
+            <tr class="patient-row" data-name="{{ p.name|lower }}" data-id="{{ p.patient_id|lower }}">
+                <td><span class="badge badge-green">{{ p.patient_id }}</span></td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.gender or '—' }}</td>
+                <td>{{ p.age or '—' }}</td>
+                <td>{{ p.weight or '—' }}</td>
+                <td>{{ p.mobile or '—' }}</td>
+                <td>{{ p.email or '—' }}</td>
+                <td>{{ p.abha_address or '—' }}</td>
+                <td>{{ p.address or '—' }}</td>
+               <td>
+
+    <a href="/doctor/write-prescription/{{ p.patient_id }}"
+       class="btn btn-primary btn-sm">
+
+       📝 Write Prescription
+    </a>
+</td> 
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="icon">🤒</div>
+        <p>No patients in queue yet. Ask medical staff to register patients.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- My Prescriptions -->
+<!-- My Prescriptions -->
+<div class="card">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+
+        <div class="card-title" style="margin-bottom:0;">
+            📋 My Recent Prescriptions
+        </div>
+
+        <a href="/doctor/clear-dashboard"
+           onclick="return confirm('Clear dashboard?')"
+           style="
+              background:#dc2626;
+              color:white;
+               padding:2px 6px;
+               border-radius:4px;
+               text-decoration:none;
+               font-size:9px;
+               font: weight 400px;
+               line-height:1;">
+               🗑 Clear<br>Dashboard
+        </a>
+    </div>
+    {% if prescriptions %}
+    <table>
+        <thead>
+            <tr>
+                <th>Prescription ID</th>
+                <th>Patient ID</th>
+                <th>Diagnosis</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rx in prescriptions[-10:]|reverse %}
+            <tr>
+    <td>
+        <span class="badge badge-teal">
+            {{ rx.prescription_id }}
+        </span>
+    </td>
+
+    <td>{{ rx.patient_id }}</td>
+
+    <td>
+        {{ rx.diagnosis[:40] + '...' if rx.diagnosis and rx.diagnosis|length > 40 else rx.diagnosis or '—' }}
+    </td>
+
+    <td>
+        {{ rx.created_at.strftime('%d %b %Y %I:%M %p') }}
+    </td>
+
+    <td>
+        <span class="badge badge-green">
+            Finalized
+        </span>
+    </td>
+
+    <td>
+
+        <a href="/doctor/prescription/{{ rx.prescription_id }}"
+           class="btn btn-sm"
+           style="background:#0f766e;color:white;">
+           👁️ View
+        </a>
+        <a href="/doctor/edit-prescription/{{ rx.prescription_id }}"
+        class="btn btn-outline btn-sm">
+        ✏️ Edit
+        </a>
+    </td>
+</tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state"><div class="icon">📋</div><p>No prescriptions written yet.</p></div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterPatients() {
+    const query = document.getElementById('patient-search').value.toLowerCase();
+    document.querySelectorAll('.patient-row').forEach(row => {
+        const name = row.dataset.name;
+        const id = row.dataset.id;
+        row.style.display = (name.includes(query) || id.includes(query)) ? '' : 'none';
+    });
+}
+</script>
+{% endblock %}

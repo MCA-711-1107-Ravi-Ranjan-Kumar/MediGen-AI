@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription {{ prescription.prescription_id }} | MediGen-AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #0d9488; --teal-dark: #0f766e; --teal-light: #14b8a6;
+            --navy: #0f172a; --white: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #f0f4f8;
+            color: #1a202c;
+            padding: 1rem;
+        }
+        
+        .action-bar {
+            max-width: 850px;
+            margin: 0 auto 1rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 0.6rem 1.3rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .btn-teal { background: var(--teal); color: white; }
+        .btn-teal:hover { background: var(--teal-dark); }
+        .btn-gray { background: #e2e8f0; color: #475569; }
+        .btn-gray:hover { background: #cbd5e1; }
+        
+        /* PRESCRIPTION PAPER */
+        .rx-paper {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* HEADER */
+        .rx-header {
+            background: linear-gradient(135deg, #0f766e, #0d9488);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .hospital-info h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+        }
+        .hospital-info p { font-size: 0.8rem; opacity: 0.85; line-height: 1.5; }
+        .rx-id-box {
+            text-align: right;
+            background: rgba(255,255,255,0.15);
+            padding: 0.8rem 1.2rem;
+            border-radius: 8px;
+        }
+        .rx-id-box .label { font-size: 0.7rem; opacity: 0.7; text-transform: uppercase; }
+        .rx-id-box .value { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+        
+        /* DOCTOR INFO */
+        .doctor-bar {
+            background: #f8fafc;
+            border-bottom: 2px solid #4a92f0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .doctor-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--teal-dark); }
+        .doctor-qual { font-size: 0.82rem; color: #64748b; }
+        .rx-date { font-size: 0.85rem; color: #64748b; text-align: right; }
+        
+        /* PATIENT INFO */
+        .patient-section {
+            padding: 1rem 2rem;
+            border-bottom:3px#3e8bf0;
+            display:grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.8rem;
+        }
+        .pinfo { }
+        .pinfo .key { font-size: 0.72rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; }
+        .pinfo .val { font-size: 0.9rem; font-weight: 500; color: #1e293b; margin-top: 0.1rem; }
+        
+        /* RX SYMBOL */
+        .rx-body { padding: 1.5rem 2rem; }
+        .rx-symbol {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.5rem;
+            color: var(--teal);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        
+        .section-head {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #475569;
+            letter-spacing: 0.1em;
+            margin: 1.2rem 0 0.7rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #297ff0;
+        }
+        
+        /* MEDICINES TABLE */
+        .med-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        .med-table th {
+            background: #f1f5f9;
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.05em;
+        }
+        .med-table td { padding: 0.8rem 0.8rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .med-table tr:last-child td { border-bottom: none; }
+        .med-name { font-weight: 600; color: #0f172a; }
+        
+        /* PHARMACY LINK */
+        .pharmacy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #ea580c;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .pharmacy-btn:hover { background: #ffedd5; }
+        
+        .info-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            font-size: 0.88rem;
+            color: #475569;
+            line-height: 1.6;
+            margin-top: 0.5rem;
+        }
+        
+        /* SIGNATURE */
+        .signature-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px dashed #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .sig-box {
+            text-align: center;
+            min-width: 180px;
+        }
+        .sig-area {
+            border-bottom: 2px solid #0d9488;
+            height: 50px;
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.3rem;
+        }
+        .sig-text {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--teal-dark);
+            font-style: italic;
+        }
+        .sig-label { font-size: 0.78rem; color: #2278f1; }
+        .sig-name { font-size: 0.9rem; font-weight: 600; color: #1e293b; margin-top: 0.2rem; }
+        .sig-qual { font-size: 0.78rem; color: #64748b; }
+        
+        /* FOOTER */
+        .rx-footer {
+            background: #f1f5f9;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: #5966f2;
+        }
+        
+        /* PRINT STYLES */
+        @media print {
+            body { background: white; padding: 0; }
+            .action-bar { display: none; }
+            .rx-paper { box-shadow: none; border-radius: 0; }
+            .pharmacy-btn { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+        @media print {
+    th, td {
+        padding: 4px !important; /* टेबल की रो को पतला करने के लिए */
+    }
+     }
+    </style>
+</head>
+<body>
+
+<div class="action-bar">
+{% if session.get('role') == 'doctor' %}
+<a href="/doctor"
+   class="btn btn-sm"
+   style="background:#0b9c90;color:white;">
+   🔙 Back
+</a>
+{% elif session.get('online_patient_id') %}
+<a href="/online-dashboard"
+   class="btn btn-sm"
+   style="background:#099b8f;color:white;">
+   🔙 Dashboard
+</a>
+
+{% else %}
+<a href="/patient"
+   class="btn btn-sm"
+   style="background:#099b8f;color:white;">
+   🔙 Dashboard
+</a>
+{% endif %}    
+<button onclick="window.print()" class="btn btn-teal">🖨️ Print / Save PDF</button>
+</div>
+
+<div class="rx-paper" id="prescription">
+    <!-- HEADER -->
+    <div class="rx-header">
+        <div class="hospital-info">
+            <h1>🏥 MediGen-AI Hospital</h1>
+            <p><strong>AI-Powered Smart Healthcare Portal</strong><br>
+           <strong>Aryabhatta Knowledge University, Patna | Contact: 0612-2451070</strong></p>
+        </div>
+        <div class="rx-id-box">
+            <div class="label">Prescription No.</div>
+            <div class="value">{{ prescription.prescription_id }}</div>
+            <div class="label" style="margin-top:0.3rem">{{ prescription.created_at.strftime('%d %B %Y') }}</div>
+        </div>
+    </div>
+    
+    <!-- DOCTOR INFO -->
+    <div class="doctor-bar">
+        <div>
+            <div class="doctor-name">{{ doctor.name if doctor else 'Unknown' }}</div>
+            <div class="doctor-qual"><strong>{{ doctor.qualification if doctor else '' }}<br>Address: 123 Healthcare Street, Patna 800001<br>Regd.no.384/28</strong></div>
+        </div>
+        <div class="rx-date">
+            <div style="font-size:0.78rem;color:#94a3b8">Date of Issue</div>
+            <div style="font-weight:600">{{ prescription.created_at.strftime('%d/%m/%Y') }}</div>
+        </div>
+    </div>
+    
+    <!-- PATIENT INFO -->
+    <div class="patient-section">
+        <div class="pinfo">
+            <div class="key">Patient ID</div>
+            <div class="val">{{ patient.patient_id }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Patient Name</div>
+            <div class="val">{{ patient.name }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Gender</div>
+            <div class="val">{{ patient.gender or '—' }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Age / Weight</div>
+            <div class="val">{{ patient.age or '—' }} yrs / {{ patient.weight or '—' }} kg</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Email</div>
+            <div class="val">{{ patient.email or '—' }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">ABHA Address</div>
+            <div class="val">{{ patient.abha_address or '—' }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Address</div>
+            <div class="val">{{ patient.address or '—' }}</div>
+        </div>
+        <div class="pinfo">
+            <div class="key">Mobile Number</div>
+            <div class="val">{{ patient.mobile or '—' }}</div>
+        </div>
+    </div>
+    
+    <!-- BODY -->
+    <div class="rx-body">
+        <div class="rx-symbol">℞</div>
+        
+        {% if prescription.symptoms %}
+        <div class="section-head">Chief Complaints</div>
+        <div class="info-box">{{ prescription.symptoms }}</div>
+        {% endif %}
+        
+        {% if prescription.diagnosis %}
+        <div class="section-head">Diagnosis</div>
+        <div class="info-box" style="font-weight:600;color:#0f172a">{{ prescription.diagnosis }}</div>
+        {% endif %}
+        
+        <!-- MEDICINES -->
+        <div class="section-head">Prescribed Medicines</div>
+        {% if medicines %}
+        <table class="med-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Medicine</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Duration</th>
+                    <th>Order Online</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in medicines %}
+                {% if med.name %}
+                <tr>
+                    <td style="color:#94a3b8;font-weight:600">{{ loop.index }}</td>
+                    <td><div class="med-name">{{ med.name }}</div></td>
+                    <td>{{ med.dosage or '—' }}</td>
+                    <td>{{ med.frequency or '—' }}</td>
+                    <td>{{ med.duration or '—' }}</td>
+                    <td>
+                        <a href="https://www.netmeds.com/catalogsearch/result?q={{ med.name|urlencode }}" 
+                           target="_blank" class="pharmacy-btn">
+                           💊 NetMeds
+                        </a>
+                        <a href="https://www.apollopharmacy.in/" 
+                           target="_blank" class="pharmacy-btn" style="margin-left:4px;background:#f0fdf4;border-color:#86efac;color:#16a34a">
+                           🟢 apollopharmacy
+                        </a>
+                        <a href="https://1mg.in/search/all?name={{ med.name|urlencode }}" 
+                           target="_blank" class="pharmacy-btn" style="margin-left:4px;background:#f0fdf4;border-color:#86efac;color:#16a34a">
+                         🟢1mg
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:#94a3b8;font-size:0.88rem">No medicines prescribed.</p>
+        {% endif %}
+        
+        {% if prescription.lab_reports %}
+        <div class="section-head">Lab Reports Advised</div><a href="https://www.pathkindlabs.com/" 
+                           target="_blank" class="pharmacy-btn" style="margin-left:4px;background:#f0fdf4;border-color:#86efac;color:#16a34a">
+                          🧪 🧫🔬🩸 pathlabs
+                        </a>
+        <div class="info-box">{{ prescription.lab_reports }}</div>
+        {% endif %}
+        
+        {% if prescription.notes %}
+        <div class="section-head">Doctor's Advice & Notes</div>
+        <div class="info-box">{{ prescription.notes }}</div>
+        {% endif %}
+        
+        <!-- DIGITAL SIGNATURE -->
+        <div class="signature-section">
+            <div class="sig-box">
+                <div class="sig-area">
+                    <div class="sig-text">{{ doctor.name.split()[0] if doctor else 'Doctor' }}</div>
+                </div>
+                <div class="sig-label"><strong> Digital Signature</strong></div>
+                <div class="sig-name">{{ doctor.name if doctor else '—' }}</div>
+                <div class="sig-qual"><strong>{{ doctor.qualification if doctor else '' }}<br>Regd.no.384/28</strong></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="rx-footer">
+        <span><strong>🏥 MediGen-AI | AI-Powered Smart Prescription</strong></span>
+        <span><strong>Generated: {{ prescription.created_at.strftime('%d/%m/%Y %H:%M') }} | Valid for 14 days</strong></span>
+    </div>
+</div>
+
+<div style="text-align:center;margin:1.5rem;font-size:0.82rem;color:#94a3b8">
+   <strong>⚠️ This is a digitally generated prescription. Order medicines only from licensed pharmacies.</strong>
+</div>
+
+</body>
+</html>

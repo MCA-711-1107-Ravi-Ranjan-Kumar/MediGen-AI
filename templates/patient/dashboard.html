@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% block title %}Patient Dashboard | MediGen-AI{% endblock %}
+{% block page_title %}
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+width:100%;
+">
+
+<div>
+My Health Dashboard
+</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<div style="
+display:flex;
+align-items:center;
+gap:8px;
+margin-left:auto;
+margin-right:8px;
+">
+
+<a href="https://www.india.gov.in/directory/helpline/" target="_blank"
+style="
+background:#0f766e;
+color:white;
+padding:5px 10px;
+border-radius:8px;
+text-decoration:none;
+font-size:12px;
+font-weight:600;
+display:flex;
+align-items:center;
+gap:4px;
+height:32px;
+">
+
+🚑 Emergency
+
+</a>
+
+<a href="https://www.google.com/maps/search/nearby+hospitals/"
+target="_blank"
+style="
+background:#0f766e;
+color:white;
+padding:5px 10px;
+border-radius:8px;
+text-decoration:none;
+font-size:12px;
+font-weight:600;
+display:flex;
+align-items:center;
+gap:4px;
+height:32px;
+">
+
+🏥 Nearby Hospital
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}
+{% block sidebar_nav %}
+<a href="/patient" class="nav-item active" style="background:#0f766e;color:white;border-radius:10px;"><span class="icon">📊</span> My Prescriptions</a>
+<br><a href="#"
+onclick="
+window.open('https://www.cowin.gov.in/', '_blank');
+window.open('https://abha.abdm.gov.in/abha/v3/', '_blank');
+return false;
+"
+class="nav-item"
+style="
+background:#0f766e;
+color:white;
+border-radius:10px;
+font-weight:600;
+">
+&#129658; Create ABHA Account
+</a><br>
+<a href="#"
+onclick="
+window.open('https://pmjay.gov.in/', '_blank');
+window.open('https://hem.nha.gov.in/search', '_blank');
+window.open('https://beneficiary.nha.gov.in/', '_blank');
+return false;
+"
+class="nav-item"
+style="
+background:#0f766e;
+color:white;
+border-radius:10px;
+font-weight:600;
+">
+&#129658; Ayushman Card Services
+</a><br>
+<a href="#"
+onclick="
+window.open('https://janaushadhi.gov.in/near-by-kendra');
+window.open('https://janaushadhi.gov.in/productportfolio/ProductmrpList');
+return false;
+"
+class="nav-item"
+style="
+background:#0f766e;
+color:white;
+border-radius:10px;
+font-weight:600;
+">
+&#128138; Jan Aushadhi Services
+</a>
+<br>
+<a href="#"
+onclick="
+window.open('https://esanjeevani.mohfw.gov.in/', '_blank');
+return false;"
+class="nav-item"
+style="
+background:#0f766e;
+color:white;
+border-radius:10px;
+font-weight:600;
+">
+&#128657; eSanjeevani Services
+</a><br>
+<a href="#"
+onclick="
+window.open('https://pmjay.gov.in/', '_blank');
+window.open('https://irdai.gov.in/', '_blank');
+window.open('https://policybazar.com/', '_blank');
+window.open('https://www.jansuraksha.gov.in/', '_blank');
+return false;
+"
+class="nav-item"
+style="
+background:#0f766e;
+color:white;
+border-radius:10px;
+font-weight:600;
+">
+&#128737; Insurance Services
+
+</a><br>
+{% endblock %}
+
+{% block content %}
+
+{% if patient %}
+<div style="background:rgba(13,148,136,0.08);border:1px solid rgba(13,148,136,0.2);border-radius:14px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem">
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Patient ID</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.patient_id }}</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Patient Name</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.name }}</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Gender</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.gender or '—' }}</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Age / Weight</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.age or '—' }} yrs / {{ patient.weight or '—' }} kg</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Mobile</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.mobile or '—' }}</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">ABHA Address</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.abha_address or '—' }}</div>
+    </div>
+    <div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);text-transform:uppercase">Address</div>
+        <div style="font-size:0.95rem;font-weight:500;margin-top:0.2rem">{{ patient.address or '—' }}</div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-title">📋 My Prescriptions</div>
+    {% if prescriptions %}
+    <div style="display:grid;gap:1rem">
+        {% for rx in prescriptions %}
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <div>
+                <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.3rem">{{ rx.diagnosis[:60] if rx.diagnosis else 'General Consultation' }}</div>
+                <div style="font-size:0.85rem;color:rgba(255,255,255,0.4)">
+                    By Dr. {{ rx.doctor_name }} | {{ rx.created_at.strftime('%d %B %Y') }}
+                </div>
+                <div style="margin-top:0.5rem">
+                    {% for med in rx.medicines_list[:3] %}
+                        <span class="badge badge-teal" style="margin-right:0.3rem">{{ med.name }}</span>
+                    {% endfor %}
+                    {% if rx.medicines_list|length > 3 %}
+                        <span style="font-size:0.8rem;color:rgba(255,255,255,0.4)">+{{ rx.medicines_list|length - 3 }} more</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div style="display:flex;gap:0.7rem;flex-wrap:wrap">
+                <span class="badge badge-teal">{{ rx.prescription_id }}</span>
+                <a href="/patient/prescription/{{ rx.prescription_id }}" class="btn btn-primary btn-sm">👁️ View</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div class="icon">📋</div>
+        <p>No prescriptions yet. Please visit the doctor.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

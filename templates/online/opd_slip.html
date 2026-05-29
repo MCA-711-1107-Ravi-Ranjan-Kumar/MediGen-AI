@@ -1,0 +1,270 @@
+
+@app.route('/patient/opd-slip/<patient_id>')
+def patient_opd_slip(patient_id):
+
+    patient = Patient.query.filter_by(patient_id=patient_id).first()
+
+    if not patient:
+        flash('Patient not found')
+        return redirect('/patient')
+
+    return render_template(
+        'patient_opd_slip.html',
+        patient=patient
+    )
+
+
+
+patient_opd_slip.html
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>OPD Slip</title>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+background:#f1f5f9;
+padding:30px;
+}
+
+.slip{
+
+max-width:900px;
+margin:auto;
+
+background:white;
+
+border-radius:20px;
+
+padding:35px;
+
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+
+border-top:8px solid #0f766e;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+border-bottom:2px dashed #cbd5e1;
+padding-bottom:20px;
+}
+
+.hospital{
+font-size:32px;
+font-weight:800;
+color:#0f766e;
+}
+
+.sub{
+font-size:14px;
+color:#64748b;
+margin-top:5px;
+}
+
+.opd{
+background:#0f766e;
+color:white;
+padding:12px 18px;
+border-radius:14px;
+font-weight:800;
+font-size:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+margin-top:20px;
+}
+
+.card{
+
+background:#f8fafc;
+
+padding:16px;
+
+border-radius:14px;
+
+border:1px solid #e2e8f0;
+}
+
+.label{
+font-size:12px;
+font-weight:800;
+color:#0f766e;
+margin-bottom:6px;
+text-transform:uppercase;
+}
+
+.value{
+font-size:16px;
+font-weight:700;
+color:#0f172a;
+}
+
+.printBtn{
+
+margin-top:35px;
+
+text-align:center;
+}
+
+button{
+
+background:#0f766e;
+
+color:white;
+
+border:none;
+
+padding:14px 30px;
+
+border-radius:14px;
+
+font-size:16px;
+
+font-weight:700;
+
+cursor:pointer;
+}
+
+button:hover{
+background:#115e59;
+}
+
+@media print{
+
+button{
+display:none;
+}
+
+body{
+background:white;
+padding:0;
+}
+
+.slip{
+box-shadow:none;
+border:none;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="slip">
+
+<div class="top">
+
+<div>
+<div class="hospital">
+🏥 MediGen-AI
+</div>
+
+<div class="sub">
+Smart Digital Healthcare OPD Slip
+</div>
+</div>
+
+<div class="opd">
+OPD-{{ patient.id }}
+</div>
+
+</div>
+
+
+
+<div class="grid">
+
+<div class="card">
+<div class="label">Patient Name</div>
+<div class="value">{{ patient.name }}</div>
+</div>
+
+<div class="card">
+<div class="label">Patient ID</div>
+<div class="value">{{ patient.patient_id }}</div>
+</div>
+
+<div class="card">
+<div class="label">Login ID</div>
+<div class="value">{{ patient.mobile }}</div>
+</div>
+
+<div class="card">
+<div class="label">Gender</div>
+<div class="value">{{ patient.gender or 'N/A' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Age</div>
+<div class="value">{{ patient.age }} Years</div>
+</div>
+
+<div class="card">
+<div class="label">Weight</div>
+<div class="value">{{ patient.weight }} KG</div>
+</div>
+
+<div class="card">
+<div class="label">Mobile</div>
+<div class="value">{{ patient.mobile }}</div>
+</div>
+
+<div class="card">
+<div class="label">ABHA Address</div>
+<div class="value">{{ patient.abha_address or 'N/A' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Department</div>
+<div class="value">{{ patient.department or 'General OPD' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Doctor Type</div>
+<div class="value">{{ patient.doctor_type or 'General Physician' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Symptoms</div>
+<div class="value">{{ patient.symptoms or 'N/A' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Address</div>
+<div class="value">{{ patient.address or 'N/A' }}</div>
+</div>
+
+<div class="card">
+<div class="label">Date & Time</div>
+<div class="value">
+{{ patient.created_at.strftime('%d %B %Y %I:%M %p') if patient.created_at else 'N/A' }}
+</div>
+</div>
+
+</div>
+
+
+
+<div class="printBtn">
+<button onclick="window.print()">
+🖨 Print OPD Slip
+</button>
+</div>
+
+</div>
+
+</body>
+</html>

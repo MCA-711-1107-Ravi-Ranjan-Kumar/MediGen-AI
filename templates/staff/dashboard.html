@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}Staff Dashboard | MediGen-AI{% endblock %}
+{% block page_title %}Medical Staff Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+<a href="/staff" class="nav-item" style="background:#0f766e;color:white;border-radius:10px;">📊</span> Dashboard</a><br>
+<a href="/staff/register-patient" class="nav-item"
+style="background:#0f766e;color:white;border-radius:10px;"><span class="icon">➕</span> <strong>Register Patient</strong></a>
+{% endblock %}
+
+{% block content %}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-num">{{ patients|length }}</div>
+        <div class="stat-label">🤒 Patients Registered</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-num">{{ patients|selectattr('registered_at')|list|length }}</div>
+        <div class="stat-label">📋 Total Records</div>
+    </div>
+</div>
+
+<div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+        <div class="card-title" style="margin-bottom:0">🤒 Registered Patients</div>
+<a href="/staff/clear-dashboard"
+   class="btn btn-danger btn-sm"
+ style="
+   background:#dc2626;
+   color:white;
+   padding:2px 6px;
+   border-radius:4px;
+   text-decoration:none;
+   font-size:9px;
+   font-weight:500;
+   line-height:1;"
+   onclick="return confirm('Clear all dashboard records?')">
+   🗑️ Clear<br>Dashboard
+</a>
+</div>
+</div>
+    {% if patients %}
+    <table>
+        <thead>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>gender</th>
+                <th>Age</th>
+                <th>weight</th>
+                <th>Mobile</th>
+                <th>Abha Address</th>
+                <th>Address</th>
+                <th>Registered On</th>
+                <th>Token Number</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in patients %}
+            <tr>
+                <td><span class="badge badge-green">{{ p.patient_id }}</span></td>
+                <td>{{ p.name }}</td>
+                <td>{{ p.gender or '-' }}</td>
+                <td>{{ p.age or '—' }}</td>
+                <td>{{ p.weight or '—' }}</td>
+                <td>{{ p.mobile or '—' }}</td>
+                <td>{{ p.abha_address or '—' }}</td>
+                <td>{{ p.address or '—' }}</td>
+                <td>{{ p.registered_at.strftime('%d %b %Y %I: %M %p') if p.registered_at else '—' }}</td>
+                 <td>
+                 <span class="badge badge-green">
+                 OPD-{{ p.id }}
+                 </span>
+                </td>
+                <td>
+
+                  <a href="/edit_patient/{{ p.id }}"
+                  class="btn btn-primary btn-sm">
+                  Edit
+                 </a>
+                
+                 <a href="/print-opd-slip/{{ p.id }}"
+                class="btn btn-success btn-sm"
+                target="_blank"
+                style ="background:#0f766e;color:white;">
+                 Print Slip
+                 </a>
+
+                </td>
+        </tr>
+       {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="icon">🤒</div>
+        <p>No patients registered yet.</p>
+        <a href="/staff/register-patient" class="btn btn-primary" style="margin-top:1rem">Register First Patient</a>
+    </div>
+    {% endif %}
+</div>
+<style>
+
+.top-right{
+    display:flex;
+    justify-content:flex-end;
+    margin-bottom:-10px;
+}
+
+.profile-dropdown{
+    position:relative;
+}
+
+.profile-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    background:rgba(255,255,255,0.05);
+
+    border:1px solid rgba(255,255,255,0.1);
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:15px;
+}
+
+.profile-name{
+    color:#99f6e4;
+    font-weight:600;
+}
+
+.dropdown-content{
+    display:none;
+
+    position:absolute;
+
+    right:0;
+    top:55px;
+
+    background:#111827;
+
+    border-radius:10px;
+
+    min-width:170px;
+
+    overflow:hidden;
+
+    z-index:1000;
+}
+
+.dropdown-content.show{
+    display:block;
+}
+
+.dropdown-item{
+    display:block;
+
+    padding:12px 15px;
+
+    color:white;
+
+    text-decoration:none;
+}
+
+.logout{
+    color:#f42c2c;
+}
+
+</style>
+
+<script>
+
+function toggleDropdown(){
+
+    document
+        .getElementById("profileDropdown")
+        .classList.toggle("show");
+
+}
+
+window.onclick = function(event){
+
+    if(!event.target.closest('.profile-btn')){
+
+        let dropdown = document.getElementById("profileDropdown");
+
+        if(dropdown.classList.contains('show')){
+
+            dropdown.classList.remove('show');
+
+        }
+
+    }
+
+}
+</script>
+{% endblock %}

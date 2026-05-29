@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OPD Slip</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f3f4f6;
+            padding:20px;
+        }
+
+        .slip{
+            max-width:700px;
+            margin:auto;
+            background:white;
+            border-radius:12px;
+            padding:30px;
+            border:2px solid #0f766e;
+        }
+
+        .header{
+            text-align:center;
+            border-bottom:2px solid #0f766e;
+            padding-bottom:15px;
+            margin-bottom:20px;
+        }
+
+        .hospital{
+            font-size:32px;
+            font-weight:bold;
+            color:#0f766e;
+        }
+
+        .tag{
+            color:#555;
+            margin-top:5px;
+        }
+
+        .token{
+            margin-top:20px;
+            text-align:center;
+            font-size:28px;
+            font-weight:bold;
+            color:#dc2626;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:20px;
+        }
+
+        td{
+            padding:12px;
+            border:1px solid #ddd;
+        }
+
+        .label{
+            font-weight:bold;
+            background:#f9fafb;
+            width:35%;
+        }
+
+        .footer{
+            margin-top:30px;
+            text-align:center;
+            color:#666;
+            font-size:14px;
+        }
+
+        .print-btn{
+            margin-top:25px;
+            text-align:center;
+        }
+
+        button{
+            background:#0f766e;
+            color:white;
+            border:none;
+            padding:12px 24px;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:16px;
+        }
+
+        @media print{
+            .action-buttons{
+                display:none !important;
+            }
+            .print-btn{
+                display:none;
+            }
+
+            body{
+                background:white;
+                padding:0;
+            }
+
+            .slip{
+                border:none;
+            }
+
+        }
+
+.action-buttons{
+
+    margin-top:30px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    width:100%;
+    
+
+    height:42px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background: color #0f766e;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.3s;
+
+    padding:0 14px;
+
+    
+}
+    </style>
+</head>
+
+<body>
+
+<div class="slip">
+
+    <div class="header">
+
+        <div class="hospital">
+           🏥 MediGen-AI Hospital
+        </div>
+
+        <div class="tag">
+            Smart OPD Registration System
+        </div>
+
+    </div>
+
+    <div class="token">
+        TOKEN NO: OPD-{{ patient.id }}
+    </div>
+
+    <table>
+
+        <tr>
+            <td class="label">Patient ID</td>
+            <td>{{ patient.patient_id }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">Patient Name</td>
+            <td>{{ patient.name }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">Gender</td>
+            <td>{{ patient.gender or '-' }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">Age</td>
+            <td>{{ patient.age or '-' }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">Weight</td>
+            <td>{{ patient.weight or '-' }} KG</td>
+        </tr>
+
+        <tr>
+            <td class="label">Mobile</td>
+            <td>{{ patient.mobile or '-' }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">ABHA Address</td>
+            <td>{{ patient.abha_address or '-' }}</td>
+        </tr>
+
+        <tr>
+            <td class="label">Assigned Doctor</td>
+            <td>
+                {% if doctor %}
+                     {{ doctor.name }}
+                {% else %}
+                    Not Assigned
+                {% endif %}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">Registration Time</td>
+            <td>
+                {{ patient.registered_at.strftime('%d %b %Y %I:%M %p') }}
+            </td>
+        </tr>
+
+    </table>
+
+    <div class="footer">
+        Please keep this OPD slip safely and wait for your token number.
+    </div>
+
+    <div class="action-buttons no-print">
+    <button onclick="window.close()" class="action-btn">
+        ← Back to Dashboard
+    </button>
+
+    <button onclick="window.print()" class="action-btn">
+        🖨 Print OPD Slip
+    </button>
+
+    
+</div>
+
+</div>
+
+</body>
+</html>

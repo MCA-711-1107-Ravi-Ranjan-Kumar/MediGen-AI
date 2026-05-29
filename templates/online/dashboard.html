@@ -1,0 +1,672 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard | MediGen-AI{% endblock %}
+
+{% block page_title %}
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+width:100%;
+flex-wrap:wrap;
+gap:10px;
+">
+
+<div style="
+font-size:28px;
+font-weight:780;
+background:linear-gradient(90deg,#11f1df,#06b6d4);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+">
+🩺 My Health Dashboard
+</div>&nbsp;
+
+<div style="
+display:flex;
+align-items:center;
+gap:10px;
+">
+
+<a href="https://www.india.gov.in/directory/helpline/"
+target="_blank"
+style="
+background:linear-gradient(135deg,#ef4444,#dc2626);
+padding:9px 16px;
+border-radius:12px;
+color:white;
+text-decoration:none;
+font-size:13px;
+font-weight:700;
+box-shadow:0 4px 15px rgba(239,68,68,0.35);
+">
+🚑 Emergency
+</a>
+
+<a href="https://www.google.com/maps/search/nearby+hospitals/"
+target="_blank"
+style="
+background:linear-gradient(135deg,#0f766e,#14b8a6);
+padding:9px 16px;
+border-radius:12px;
+color:white;
+text-decoration:none;
+font-size:13px;
+font-weight:700;
+box-shadow:0 4px 15px rgba(20,184,166,0.35);
+">
+🏥 Nearby Hospital
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block sidebar_nav %}
+
+<a href="/patient" class="nav-item modernSideBtn">
+📊 Dashboard
+</a>
+
+<br>
+
+<a href="#" onclick="
+window.open('https://abha.abdm.gov.in/');
+window.open('https://www.cowin.gov.in/', '_blank');
+return false;"
+class="nav-item modernSideBtn">
+🪪 Create ABHA
+</a>
+
+<br>
+
+<a href="#" onclick="
+window.open('https://pmjay.gov.in/');
+window.open('https://hem.nha.gov.in/search', '_blank');
+window.open('https://beneficiary.nha.gov.in/', '_blank');
+return false;"
+class="nav-item modernSideBtn">
+💳 Ayushman Card
+</a>
+
+<br>
+
+<a href="#" onclick="
+window.open('https://janaushadhi.gov.in/near-by-kendra');
+window.open('https://janaushadhi.gov.in/productportfolio/ProductmrpList');
+return false;"
+class="nav-item modernSideBtn">
+💊 Jan Aushadhi
+</a>
+
+<br>
+
+<a href="#" onclick="
+window.open('https://esanjeevani.mohfw.gov.in/');
+return false;"
+class="nav-item modernSideBtn">
+🩺 eSanjeevani
+</a>
+
+<br>
+
+<a href="#" onclick="
+window.open('https://pmjay.gov.in/', '_blank');
+window.open('https://irdai.gov.in/', '_blank');
+window.open('https://policybazar.com/', '_blank');
+window.open('https://www.jansuraksha.gov.in/', '_blank');
+return false;"
+class="nav-item modernSideBtn">
+🛡 Insurance
+</a>
+
+<style>
+
+.modernSideBtn{
+background:linear-gradient(135deg,#0f766e,#14b8a6);
+color:white !important;
+border-radius:14px;
+padding:12px 14px;
+font-weight:700;
+display:block;
+margin-bottom:10px;
+box-shadow:0 6px 18px rgba(20,184,166,0.22);
+transition:0.3s;
+}
+
+.modernSideBtn:hover{
+transform:translateY(-2px) scale(1.02);
+}
+
+</style>
+
+{% endblock %}
+
+
+
+{% block content %}
+
+{% if patient %}
+
+<div style="
+
+background:
+linear-gradient(rgba(255,255,255,0.88), rgba(255,255,255,0.92)),
+url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?q=80&w=1600&auto=format&fit=crop');
+
+background-size:cover;
+background-position:center;
+
+border-radius:28px;
+padding:28px;
+
+border:1px solid rgba(255,255,255,0.5);
+
+box-shadow:
+0 10px 40px rgba(15,118,110,0.15),
+0 4px 15px rgba(0,0,0,0.05);
+
+backdrop-filter:blur(12px);
+
+">
+
+<!-- TOP PROFILE -->
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:15px;
+margin-bottom:25px;
+">
+
+<div>
+
+<div style="
+font-size:30px;
+font-weight:800;
+color:#0f172a;
+margin-bottom:6px;
+">
+👤 {{ patient.name }}
+</div>
+
+<div style="
+font-size:14px;
+color:#475569;
+font-weight:500;
+">
+Smart Digital Patient Profile
+</div>
+
+</div>
+
+<div style="
+background:linear-gradient(135deg,#0f766e,#14b8a6);
+padding:14px 22px;
+border-radius:18px;
+color:white;
+font-weight:800;
+font-size:18px;
+box-shadow:0 8px 20px rgba(20,184,166,0.35);
+">
+🆔 {{ patient.opd_number if patient.opd_number else 'OPD-' ~ patient.id }}
+</div>
+
+</div>
+
+
+
+<!-- PATIENT INFO -->
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+gap:16px;
+">
+
+<div class="modernCard">
+<label>Login ID</label>
+<span>{{ patient.mobile }}</span>
+</div>
+
+<div class="modernCard">
+<label>Patient ID</label>
+<span>{{ patient.patient_id }}</span>
+</div>
+
+<div class="modernCard">
+<label>Gender</label>
+<span>{{ patient.gender or 'N/A' }}</span>
+</div>
+
+<div class="modernCard">
+<label>Age</label>
+<span>{{ patient.age }} Years</span>
+</div>
+
+<div class="modernCard">
+<label>Weight</label>
+<span>{{ patient.weight }} KG</span>
+</div>
+
+<div class="modernCard">
+<label>Mobile</label>
+<span>{{ patient.mobile }}</span>
+</div>
+
+<div class="modernCard">
+<label> Email Address</label>
+<span>{{ patient.email or 'N/A' }}</span>
+</div>
+
+<div class="modernCard">
+<label>ABHA Address</label>
+<span>{{ patient.abha_address or 'N/A' }}</span>
+</div>
+
+<div class="modernCard">
+<label> Address</label>
+<span>{{ patient.address or 'N/A' }}</span>
+</div>
+
+<div class="modernCard">
+<label>Symptoms</label>
+<span>{{ patient.symptoms or 'N/A' }}</span>
+</div>
+
+<div class="modernCard">
+<label>Department</label>
+<span>{{ patient.suggested_department}}</span>
+</div>
+
+<div class="modernCard">
+<label>Doctor Type</label>
+<span>{{ patient.suggested_doctor_type }}</span>
+</div>
+
+<div class="modernCard">
+<label>Registration Date</label>
+<span>
+{{ patient.created_at.strftime('%d %b %Y %I:%M %p') if patient.created_at else 'N/A' }}
+</span>
+</div>
+
+</div>
+
+
+
+<!-- BUTTONS -->
+
+<div style="
+margin-top:28px;
+display:flex;
+gap:14px;
+flex-wrap:wrap;
+">
+
+<button onclick="window.print()" class="print-btn no-print"
+style="
+background:linear-gradient(135deg,#2563eb,#06b6d4);
+padding:14px 24px;
+border-radius:14px;
+color:white;
+text-decoration:none;
+font-weight:800;
+font-size:14px;
+box-shadow:0 6px 18px rgba(37,99,235,0.3);
+">
+🖨 Print OPD Slip
+</button>
+</a>
+
+</div>
+
+</div>
+
+
+
+<style>
+
+.modernCard{
+
+background:rgba(255,255,255,0.72);
+
+border:1px solid rgba(255,255,255,0.6);
+
+padding:15px;
+
+border-radius:18px;
+
+box-shadow:0 4px 12px rgba(0,0,0,0.04);
+
+backdrop-filter:blur(10px);
+
+transition:0.3s;
+}
+
+.modernCard:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 20px rgba(15,118,110,0.12);
+}
+
+.modernCard label{
+display:block;
+font-size:11px;
+font-weight:800;
+letter-spacing:1px;
+text-transform:uppercase;
+color:#0f766e;
+margin-bottom:7px;
+}
+
+.modernCard span{
+font-size:15px;
+font-weight:700;
+color:#0f172a;
+word-break:break-word;
+}
+.print-btn{
+
+background:linear-gradient(135deg,#14b8a6,#0f766e);
+
+color:white;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:12px;
+
+font-size:14px;
+
+font-weight:700;
+
+cursor:pointer;
+
+}
+
+
+.print-btn{
+
+background:linear-gradient(135deg,#14b8a6,#0f766e);
+
+color:white;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:12px;
+
+font-size:14px;
+
+font-weight:700;
+
+cursor:pointer;
+
+font-weight:700;
+
+}
+
+
+
+/* PRINT MODE */
+
+@media print{
+
+body{
+
+background:#f4fffd !important;
+
+color:#111827 !important;
+
+font-family:'Segoe UI',sans-serif;
+
+}
+
+
+
+/* HIDE BUTTONS */
+
+.no-print,
+.print-btn{
+
+display:none !important;
+
+}
+
+
+
+/* TOPBAR */
+
+.topbar,
+header,
+nav{
+
+background:#e6fffb !important;
+
+color:#065f46 !important;
+
+border-bottom:1px solid #b6f0e5 !important;
+
+box-shadow:none !important;
+
+}
+
+
+
+/* SIDEBAR */
+
+.sidebar{
+
+background:#ecfffb !important;
+
+border-right:1px solid #b6f0e5 !important;
+
+}
+
+
+
+/* CARDS */
+
+.card,
+.profile-card,
+.info-card,
+.dashboard-card,
+.modernCard{
+
+background:white !important;
+
+border:1px solid #d1fae5 !important;
+
+box-shadow:none !important;
+
+}
+
+
+
+/* LINKS CLICKABLE */
+
+a{
+
+color:#0f766e !important;
+
+text-decoration:underline !important;
+
+pointer-events:auto !important;
+
+cursor:pointer !important;
+
+}
+
+
+
+/* hyperlink preserve in PDF */
+
+a[href]:after{
+
+content:"";
+
+}
+
+
+
+/* headings */
+
+h1,h2,h3,h4{
+
+color:#065f46 !important;
+
+}
+
+
+/* PROFESSIONAL PRINT */
+
+*{
+
+-webkit-print-color-adjust:exact;
+
+print-color-adjust:exact;
+
+}
+
+}
+
+</style>
+{% if prescriptions %}
+
+<div style="
+margin-top:30px;
+background:white;
+border-radius:24px;
+padding:24px;
+box-shadow:0 8px 30px rgba(15,118,110,.08);
+border:1px solid rgba(15,118,110,.08);
+">
+
+<div style="
+font-size:24px;
+font-weight:800;
+color:#0f172a;
+margin-bottom:20px;
+">
+📋 My Prescriptions
+</div>
+
+{% for rx in prescriptions %}
+
+<div style="
+border:1px solid rgba(15,118,110,.12);
+border-radius:20px;
+padding:20px;
+margin-bottom:20px;
+background:linear-gradient(135deg,#f8fffe,#f0fdfa);
+">
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:18px;
+">
+
+<div>
+
+<div style="
+font-size:18px;
+font-weight:800;
+color:#0f172a;
+">
+🧾 {{ rx.prescription_id }}
+</div>
+
+<div style="
+font-size:13px;
+color:#64748b;
+margin-top:4px;
+">
+{{ rx.created_at.strftime('%d %b %Y %I:%M %p') }}
+</div>
+
+</div>
+
+<div style="
+background:#dcfce7;
+color:#166534;
+padding:8px 14px;
+border-radius:12px;
+font-size:13px;
+font-weight:700;
+">
+✅ Finalized
+</div>
+<a href="/online/prescription/{{ rx.prescription_id }}"
+class="print-btn">
+
+👁 View Prescription
+
+</a>
+</div>
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:16px;
+">
+
+<div class="modernCard">
+<label>Doctor</label>
+<span>
+{{ rx.doctor_name }}
+</span>
+</div>
+
+<div class="modernCard">
+<label>Qualification</label>
+<span>
+{{ rx.doctor_qualification or 'N/A' }}
+</span>
+</div>
+
+<div class="modernCard">
+<label>Symptoms</label>
+<span>
+{{ rx.symptoms or 'N/A' }}
+</span>
+</div>
+
+<div class="modernCard">
+<label>Diagnosis</label>
+<span>
+{{ rx.diagnosis or 'N/A' }}
+</span>
+</div>
+
+<div class="modernCard">
+<label>Lab Reports</label>
+<span>
+{{ rx.lab_reports or 'N/A' }}
+</span>
+</div>
+
+<div class="modernCard">
+<label>Doctor Notes</label>
+<span>
+{{ rx.notes or 'N/A' }}
+</span>
+</div>
+
+</div>
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endblock %}

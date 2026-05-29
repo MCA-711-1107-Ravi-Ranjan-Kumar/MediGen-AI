@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% block title %}Write Prescription | MediGen-AI{% endblock %}
+{% block page_title %}Write Prescription{% endblock %}
+
+{% block sidebar_nav %}
+<a href="/doctor" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .patient-info-bar {
+        background: rgba(13,148,136,0.08);
+        border: 1px solid rgba(13,148,136,0.2);
+        border-radius: 14px;
+        padding: 1.2rem 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .info-item label { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+    .info-item span { display: block; font-size: 0.95rem; font-weight: 500; color: var(--white); margin-top: 0.2rem; }
+    
+    .medicine-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.5fr 1fr auto;
+        gap: 0.6rem;
+        align-items: center;
+        margin-bottom: 0.6rem;
+        padding: 0.8rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 10px;
+    }
+    .medicine-row input { margin: 0; }
+    .remove-btn {
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.2);
+        color: #fca5a5;
+        border-radius: 8px;
+        padding: 0.5rem 0.7rem;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+    }
+    .remove-btn:hover { background: rgba(239,68,68,0.2); }
+    
+    .ai-btn {
+        background: linear-gradient(135deg, #7c3aed, #4f46e5);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.65rem 1.2rem;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .ai-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 15px rgba(124,58,237,0.4); }
+    .ai-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    
+    .ai-loading { display: none; align-items: center; gap: 0.5rem; color: #a78bfa; font-size: 0.85rem; }
+    .ai-loading.show { display: flex; }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(167,139,250,0.3); border-top-color: #a78bfa; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    
+    .col-header { font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; padding: 0 0.3rem; }
+    .med-cols { display: grid; grid-template-columns: 2fr 1fr 1.5fr 1fr auto; gap: 0.6rem; margin-bottom: 0.4rem; padding: 0 0.8rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="patient-info-bar">
+    <div class="info-item">
+        <label>Patient ID</label>
+        <span>{{ patient.patient_id }}</span>
+    </div>
+    <div class="info-item">
+        <label>Name</label>
+        <span>{{ patient.name }}</span>
+    </div>
+    <div class="info-item">
+    <label>Gender</label>
+    <span>{{ patient.gender or '—' }}</span>
+    </div>
+    <div class="info-item">
+        <label>Age</label>
+        <span>{{ patient.age or '—' }} yrs</span>
+    </div>
+    <div class="info-item">
+        <label>Weight</label>
+        <span>{{ patient.weight or '—' }} kg</span>
+    </div>
+    <div class="info-item">
+        <label>Mobile</label>
+        <span>{{ patient.mobile or '—' }}</span>
+    </div>
+    <div class="info-item">
+    <label>Email</label>
+    <span>{{ patient.email or '—' }}</span>
+    </div>&nbsp;
+    <div class="info-item">
+        <label>ABHA Address</label>
+        <span>{{ patient.abha_address or '—' }}</span>
+    </div>
+    <div class="info-item">
+    <label>Address</label>
+    <span>{{ patient.address or '—' }}</span>
+    </div>
+</div>
+
+<form method="POST" onsubmit="prepareSubmit()">
+    <input type="hidden" name="medicines_json" id="medicines-json">
+    
+    <!-- Symptoms -->
+    <div class="card">
+        <div class="card-title">🩺 Clinical Details</div>
+        <div class="form-grid">
+            <div class="form-group full">
+                <label>Chief Complaints / Symptoms *</label>
+                <textarea name="symptoms" id="symptoms-input" placeholder="Patient complaints: fever since 3 days, headache, body ache..." required></textarea>
+            </div>
+            <div class="form-group full">
+                <label>Diagnosis / Assessment</label>
+                <textarea name="diagnosis" placeholder="Diagnosis: Viral Fever / Upper Respiratory Tract Infection..."></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Medicines -->
+    <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem">
+            <div class="card-title" style="margin-bottom:0">💊 Medicines</div>
+            <div style="display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap">
+                <div class="ai-loading" id="ai-loading"><div class="spinner"></div> AI thinking...</div>
+                <button type="button" class="ai-btn" id="ai-btn" onclick="getAISuggestions()">🤖 AI Suggest Medicines</button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addMedicineRow()">+ Add Medicine</button>
+            </div>
+        </div>
+        
+        <div class="med-cols">
+            <div class="col-header">Medicine Name</div>
+            <div class="col-header">Dosage</div>
+            <div class="col-header">Frequency</div>
+            <div class="col-header">Duration</div>
+            <div class="col-header"></div>
+        </div>
+        
+        <div id="medicines-container"></div>
+        
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.3);margin-top:0.5rem">
+            💡 Enter symptoms above and click "AI Suggest Medicines" for intelligent recommendations
+        </p>
+    </div>
+    
+    <!-- Lab Reports & Notes -->
+    <div class="card">
+        <div class="card-title">🧪 Lab Reports & Notes</div>
+        <div class="form-grid">
+            <div class="form-group full">
+                <label>Lab Reports Advised</label>
+                <textarea name="lab_reports" placeholder="CBC, Blood Sugar Fasting, Urine R/E, Chest X-Ray..."></textarea>
+            </div>
+            <div class="form-group full">
+                <label>Doctor's Notes / Advice</label>
+                <textarea name="notes" placeholder="Rest for 3 days. Plenty of fluids. Follow up after 5 days..."></textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div style="display:flex;gap:1rem;align-items:center">
+        <button type="submit" class="btn btn-primary" style="font-size:1rem;padding:0.8rem 2rem">
+            ✅ Finalize & Sign Prescription
+        </button>
+        <a href="/doctor" class="btn btn-outline">Cancel</a>
+        <span style="font-size:0.82rem;color:rgba(255,255,255,0.3)">Digital signature will be applied automatically</span>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let medicines = [];
+
+function addMedicineRow(med = {}) {
+    const idx = medicines.length;
+    medicines.push(med);
+    
+    const container = document.getElementById('medicines-container');
+    const row = document.createElement('div');
+    row.className = 'medicine-row';
+    row.id = 'med-row-' + idx;
+    row.innerHTML = `
+        <input type="text" placeholder="Medicine name" value="${med.name || ''}" onchange="updateMed(${idx}, 'name', this.value)">
+        <input type="text" placeholder="1 tab / 5ml" value="${med.dosage || ''}" onchange="updateMed(${idx}, 'dosage', this.value)">
+        <input type="text" placeholder="OD / BD / TDS" value="${med.frequency || ''}" onchange="updateMed(${idx}, 'frequency', this.value)">
+        <input type="text" placeholder="5 days" value="${med.duration || ''}" onchange="updateMed(${idx}, 'duration', this.value)">
+        <button type="button" class="remove-btn" onclick="removeMed(${idx})">✕</button>
+    `;
+    container.appendChild(row);
+}
+
+function updateMed(idx, field, value) {
+    medicines[idx][field] = value;
+}
+
+function removeMed(idx) {
+    const row = document.getElementById('med-row-' + idx);
+    if (row) row.remove();
+    medicines[idx] = null;
+}
+
+function prepareSubmit() {
+    const validMeds = medicines.filter(m => m && m.name && m.name.trim());
+    document.getElementById('medicines-json').value = JSON.stringify(validMeds);
+}
+
+async function getAISuggestions() {
+    const symptoms = document.getElementById('symptoms-input').value.trim();
+    if (!symptoms) {
+        alert('Please enter patient symptoms first.');
+        return;
+    }
+    
+    const btn = document.getElementById('ai-btn');
+    const loading = document.getElementById('ai-loading');
+    btn.disabled = true;
+    loading.classList.add('show');
+    
+    try {
+        const response = await fetch('/doctor/ai-suggest', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ symptoms })
+        });
+        const data = await response.json();
+        
+        if (data.success && data.medicines.length > 0) {
+            // Clear and add AI suggestions
+            document.getElementById('medicines-container').innerHTML = '';
+            medicines = [];
+            data.medicines.forEach(med => addMedicineRow(med));
+            
+            // Show success indicator
+            btn.textContent = '✓ AI Suggestions Applied';
+            btn.style.background = 'linear-gradient(135deg, #059669, #047857)';
+            setTimeout(() => {
+                btn.textContent = '🤖 AI Suggest Medicines';
+                btn.style.background = '';
+            }, 3000);
+        }
+    } catch (error) {
+        alert('AI suggestion failed. Please add medicines manually.');
+    } finally {
+        btn.disabled = false;
+        loading.classList.remove('show');
+    }
+}
+
+// Start with 2 empty medicine rows
+addMedicineRow();
+addMedicineRow();
+</script>
+{% endblock %}

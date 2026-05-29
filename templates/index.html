@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediGen-AI — Smart Healthcare Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{--teal:#0d9488;--tl:#14b8a6;--cy:#06b6d4;--navy:#0c1a2e;--card:#0f2642;--muted:#94a3b8;--border:rgba(255,255,255,.07);}
+*{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--navy);color:#e2e8f0;overflow-x:hidden;}
+nav{position:fixed;top:0;width:100%;z-index:999;padding:1rem 2.5rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(12,26,46,.92);border-bottom:1px solid rgba(13,148,136,.15);}
+.logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;}
+.logo i{color:var(--tl);font-size:1.55rem;}
+.logo-t{font-family:'Syne',sans-serif;font-weight:800;font-size:1.35rem;color:#fff;}
+.logo-t span{color:var(--tl);}
+.nav-links{display:flex;align-items:center;gap:1.8rem;list-style:none;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:.2s;}
+.nav-links a:hover{color:var(--tl);}
+.btn-nl{background:var(--teal);color:#fff;padding:.5rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;font-size:.9rem;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;transition:.2s;}
+.btn-nl:hover{background:#0f766e;transform:translateY(-1px);}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:7rem 2rem 4rem;overflow:hidden;}
+.hbg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(13,148,136,.13),transparent 70%),radial-gradient(ellipse 40% 40% at 85% 80%,rgba(6,182,212,.07),transparent 60%);pointer-events:none;}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(13,148,136,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(13,148,136,.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;}
+.hcont{max-width:900px;text-align:center;position:relative;z-index:1;}
+.badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.3);padding:.4rem 1.3rem;border-radius:100px;font-size:.78rem;color:var(--tl);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2rem;animation:fu .6s ease both;}
+h1{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.1;margin-bottom:1.5rem;animation:fu .6s .15s ease both;}
+.hl{color:var(--tl);position:relative;}
+.hl::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--teal),var(--cy));border-radius:2px;}
+.hdesc{font-size:1.1rem;color:var(--muted);max-width:600px;margin:0 auto 3rem;line-height:1.75;font-weight:300;animation:fu .6s .3s ease both;}
+.hbtns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fu .6s .45s ease both;}
+.bp{background:linear-gradient(135deg,var(--teal),var(--cy));color:#fff;padding:.9rem 2.3rem;border-radius:10px;text-decoration:none;font-weight:600;font-size:1rem;transition:.3s;display:inline-flex;align-items:center;gap:.5rem;box-shadow:0 0 30px rgba(13,148,136,.25);}
+.bp:hover{transform:translateY(-2px);box-shadow:0 0 45px rgba(13,148,136,.45);}
+.bs{background:transparent;color:var(--tl);padding:.9rem 2.3rem;border-radius:10px;text-decoration:none;font-weight:600;font-size:1rem;border:1.5px solid rgba(13,148,136,.5);transition:.3s;display:inline-flex;align-items:center;gap:.5rem;}
+.bs:hover{background:rgba(13,148,136,.1);transform:translateY(-2px);}
+.stats{display:flex;gap:3rem;justify-content:center;margin-top:4.5rem;flex-wrap:wrap;animation:fu .6s .6s ease both;}
+.stat{text-align:center;}
+.sn{font-family:'Syne',sans-serif;font-size:2.3rem;font-weight:800;color:var(--tl);}
+.sl{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem;}
+.sec{padding:5.5rem 2rem;}.sec-dark{background:rgba(0,0,0,.2);}
+.cont{max-width:1100px;margin:0 auto;}
+.stitle{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:800;text-align:center;margin-bottom:.6rem;}
+.ssub{text-align:center;color:var(--muted);font-size:1rem;max-width:550px;margin:0 auto 3.5rem;line-height:1.65;}
+/* ROLES */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:1.4rem;}
+.rcard{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:2rem 1.7rem;text-align:center;cursor:pointer;transition:.3s;position:relative;overflow:hidden;text-decoration:none;display:block;color:#e2e8f0;}
+.rcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(13,148,136,.07),transparent);opacity:0;transition:.3s;}
+.rcard:hover{transform:translateY(-6px);border-color:rgba(13,148,136,.4);box-shadow:0 22px 45px rgba(0,0,0,.3);}
+.rcard:hover::before{opacity:1;}
+.rico{width:66px;height:66px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:1.65rem;margin:0 auto 1.2rem;}
+.rcard h3{font-family:'Syne',sans-serif;font-size:1.15rem;font-weight:700;margin-bottom:.45rem;}
+.rcard p{font-size:.85rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;}
+.rlb{display:inline-block;color:var(--tl);font-size:.83rem;font-weight:600;border:1px solid rgba(13,148,136,.35);padding:.42rem 1.2rem;border-radius:8px;transition:.25s;}
+.rcard:hover .rlb{background:rgba(13,148,136,.14);}
+.ia{background:rgba(139,92,246,.13);color:#a78bfa;}
+.id{background:rgba(16,185,129,.13);color:#34d399;}
+.is{background:rgba(6,182,212,.13);color:#22d3ee;}
+.ip{background:rgba(249,115,22,.13);color:#fb923c;}
+/* STEPS */
+.steps{max-width:750px;margin:0 auto;}
+.step{display:flex;gap:2rem;align-items:flex-start;padding:1.8rem 0;position:relative;}
+.step:not(:last-child)::after{content:'';position:absolute;left:23px;top:66px;bottom:-8px;width:2px;background:linear-gradient(to bottom,var(--teal),transparent);z-index:0;}
+.snum{flex-shrink:0;width:48px;height:48px;background:linear-gradient(135deg,var(--teal),var(--cy));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;position:relative;z-index:1;box-shadow:0 0 20px rgba(13,148,136,.3);}
+.sbody h3{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700;margin-bottom:.35rem;padding-top:.25rem;}
+.sbody p{color:var(--muted);font-size:.88rem;line-height:1.65;}
+/* FEATURES */
+.fgrid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.3rem;}
+.fcard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.6rem;display:flex;gap:1.1rem;align-items:flex-start;transition:.3s;}
+.fcard:hover{border-color:rgba(13,148,136,.28);transform:translateY(-3px);}
+.fico{width:44px;height:44px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(13,148,136,.13);color:var(--tl);font-size:1.1rem;}
+.fcard h4{font-family:'Syne',sans-serif;font-size:.97rem;font-weight:700;margin-bottom:.3rem;}
+.fcard p{font-size:.83rem;color:var(--muted);line-height:1.55;}
+footer{background:rgba(0,0,0,.4);border-top:1px solid var(--border);padding:2.2rem 2rem;text-align:center;}
+footer p{color:var(--muted);font-size:.84rem;line-height:1.7;}
+footer strong{color:var(--tl);}
+@keyframes fu{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fl{0%{transform:translateY(100vh) scale(0);opacity:0;}10%{opacity:.5;}90%{opacity:.2;}100%{transform:translateY(-80px) scale(1.3);opacity:0;}}
+.pt{position:absolute;border-radius:50%;pointer-events:none;animation:fl linear infinite;}
+@media(max-width:768px){.nav-links li:not(:last-child){display:none;}.stats{gap:1.5rem;}.step{flex-direction:column;gap:1rem;}.step::after{display:none!important;}}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="/" class="logo"><i class="fas fa-heartbeat"></i><div class="logo-t">🏥 MediGen<span>-AI</span></div></a>
+  <ul class="nav-links">
+    <li><a href="#roles"><strong>Roles</strong></a></li>
+    <li><a href="#workflow"><strong>Workflow</strong></a></li>
+    <li><a href="#features"><strong>Features</strong></a></li>
+   <li>
+  <a href="/online-login" class="btn-nl" 
+     style="background:linear-gradient(135deg,#27fcfc,#8eecfc);">
+     
+     <i class="fas fa-user-plus"></i>
+     <strong>direct login Patient</strong>
+     
+  </a>
+</li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hbg"></div><div class="hgrid"></div><div id="pc"></div>
+  <div class="hcont">
+    <div class="badge"><i class="fas fa-robot"></i>AI-Powered Healthcare Portal</div>
+    <h1>Smart Healthcare,<br><span class="hl">Seamless Delivery</span></h1>
+    <p class="hdesc">MediGen-AI digitizes hospital OPD workflows with AI-driven prescriptions and instant medicine delivery — from <strong style="color:#e2e8f0">Symptom to Doorstep</strong> in minutes.</p>
+    <div class="hbtns">
+      <a href="/login" class="bp"><i class="fas fa-sign-in-alt"></i> Get Started </a>
+      <a href="#workflow" class="bs"><i class="fas fa-play-circle"></i> How it Works</a>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="sn">3x</div><div class="sl">Faster OPD</div></div>
+      <div class="stat"><div class="sn">0</div><div class="sl">Rx Errors</div></div>
+      <div class="stat"><div class="sn">10<small style="font-size:1.1rem">min</small></div><div class="sl">Delivery</div></div>
+      <div class="stat"><div class="sn">AI</div><div class="sl">Diagnosis</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="roles">
+  <div class="cont">
+    <h2 class="stitle">Choose Your Role</h2>
+    <p class="ssub">MediGen-AI has 4 dedicated portals — each tailored for a different user.</p>
+    <div class="rgrid">
+      <a href="/login" class="rcard"><div class="rico ia"><i class="fas fa-user-shield"></i></div><h3>Admin</h3><p>Manage users, doctors, staff and monitor all hospital activity from a central dashboard.</p><span class="rlb"><i class="fas fa-sign-in-alt"></i> Admin Login</span></a>
+      <a href="/login" class="rcard"><div class="rico id"><i class="fas fa-user-md"></i></div><h3>Doctor</h3><p>View patient queue, generate AI-assisted prescriptions and digitally sign them with one click.</p><span class="rlb"><i class="fas fa-sign-in-alt"></i> Doctor Login</span></a>
+      <a href="/login" class="rcard"><div class="rico is"><i class="fas fa-id-card"></i></div><h3>OPD Staff</h3><p>Register incoming patients, record symptoms, and manage the smart digital queue system.</p><span class="rlb"><i class="fas fa-sign-in-alt"></i> Staff Login</span></a>
+      <a href="/login" class="rcard"><div class="rico ip"><i class="fas fa-user-injured"></i></div><h3>Patient</h3><p>View your prescription, download PDF, and order medicines via Blinkit — 10-min delivery.</p><span class="rlb"><i class="fas fa-sign-in-alt"></i> Patient Login</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec sec-dark" id="workflow">
+  <div class="cont">
+    <h2 class="stitle">How MediGen-AI Works</h2>
+    <p class="ssub">Seamless end-to-end flow — from hospital registration to doorstep medicine delivery.</p>
+    <div class="steps">
+      <div class="step"><div class="snum">1</div><div class="sbody"><h3>🏥 Patient Arrives at Hospital</h3><p>OPD Staff registers the patient — name, age, weight, mobile, ABHA Address. A unique <strong style="color:var(--tl)">Patient UID</strong> is auto-generated and patient joins the smart digital queue.</p></div></div>
+      <div class="step"><div class="snum">2</div><div class="sbody"><h3>🩺 Doctor Reviews &amp; Prescribes</h3><p>Doctor logs in, sees waiting list, selects patient. Clicks <strong style="color:#a78bfa">AI Suggest</strong> — AI instantly generates a prescription draft. Doctor reviews, edits, and finalizes with digital signature.</p></div></div>
+      <div class="step"><div class="snum">3</div><div class="sbody"><h3>📄 Patient Downloads Prescription</h3><p>Patient logs in with email. The finalized prescription appears immediately. They can <strong style="color:var(--tl)">Print / PDF</strong> for records or pharmacy use.</p></div></div>
+      <div class="step"><div class="snum">4</div><div class="sbody"><h3>⚡ Instant Medicine Delivery via Blinkit</h3><p>Every medicine has a direct <strong style="color:#FFD700"> 1mg order link</strong>. One click — medicines ordered from nearest pharmacy. Delivered in <strong style="color:var(--tl)">10 minutes</strong>.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="cont">
+    <h2 class="stitle">Key Features</h2>
+    <p class="ssub">Everything needed for a complete, intelligent digital healthcare experience.</p>
+    <div class="fgrid2">
+      <div class="fcard"><div class="fico"><i class="fas fa-brain"></i></div><div><h4>AI Symptom Checker</h4><p>NLP-powered symptom analysis using Google Gemini / OpenAI to identify conditions and suggest treatment.</p></div></div>
+      <div class="fcard"><div class="fico"><i class="fas fa-file-prescription"></i></div><div><h4>Smart Prescription</h4><p>Auto-generated digital prescriptions with medicines, dosages, and follow-up advice — fully editable by doctor.</p></div></div>
+      <div class="fcard"><div class="fico"><i class="fas fa-signature"></i></div><div><h4>Digital Signature</h4><p>Every prescription verified by a licensed doctor before delivery — Human-in-the-Loop safety.</p></div></div>
+      <div class="fcard"><div class="fico"><i class="fas fa-file-pdf"></i></div><div><h4>PDF / Print</h4><p>Professionally formatted prescription printable by patients for records or pharmacy use.</p></div></div>
+      <div class="fcard"><div class="fico"><i class="fas fa-bolt"></i></div><div><h4>Medician portal Integration</h4><p>One-click Quick commerce medicine ordering per prescription line — 10-minute doorstep delivery.</p></div></div>
+      <div class="fcard"><div class="fico"><i class="fas fa-shield-alt"></i></div><div><h4>Role-Based Auth</h4><p>4 roles (Admin/Doctor/Staff/Patient) with SHA-256 encrypted passwords and Flask session management.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p style="margin-bottom:.35rem;"><strong>MediGen-AI</strong> — A Generative AI-Powered Healthcare Portal</p>
+  <p>Built by <strong>Ravi Ranjan Kumar</strong> | Roll: 05 | MCA 4th Sem | Aryabhatta Knowledge University, Patna | 2024–26</p>
+  <p style="margin-top:.4rem;font-size:.76rem;opacity:.5;">Under guidance of Prof. Amit Kumar Shukla (HOD-IT) | Cimage College</p>
+</footer>
+
+<script>
+const pc=document.getElementById('pc');
+for(let i=0;i<15;i++){const p=document.createElement('div');p.className='pt';const s=Math.random()*4+1.5;p.style.cssText=`width:${s}px;height:${s}px;background:rgba(13,148,136,${Math.random()*.4+.15});left:${Math.random()*100}%;animation-duration:${Math.random()*13+8}s;animation-delay:-${Math.random()*13}s;`;pc.appendChild(p);}
+window.addEventListener('scroll',()=>{document.getElementById('nav').style.background=window.scrollY>60?'rgba(9,21,37,.97)':'rgba(12,26,46,.92)';});
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'});}}));
+</script>
+</body>
+</html>

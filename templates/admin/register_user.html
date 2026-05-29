@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Register Doctor/Staff | MediGen-AI{% endblock %}
+{% block page_title %}Register Doctor / Staff{% endblock %}
+
+{% block sidebar_nav %}
+<a href="/admin" class="nav-item"><span class="icon">📊</span> Dashboard</a>
+<a href="/admin/register-doctor" class="nav-item active"><span class="icon">➕</span> Add Doctor/Staff</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:680px">
+    <div class="card-title">Register New Doctor / Medical Staff</div>
+
+    <form method="POST">
+        <div class="form-group">
+            <label>Role *</label>
+            <select name="role" required>
+                <option value="staff">👩‍💼 Medical Staff</option>
+                <option value="doctor">👨‍⚕️ Doctor</option>
+            </select>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group full">
+                <label>Full Name *</label>
+                <input type="text" name="name" placeholder="Dr. Rajan Sharma" required>
+            </div>
+            <div class="form-group">
+                <label>Qualification</label>
+                <input type="text" name="qualification" placeholder="MBBS, MD - General Medicine">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" name="mobile" placeholder="9876543210" maxlength="10">
+            </div>
+            <div class="form-group full">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="doctor@hospital.com">
+            </div>
+        </div>
+
+        <!-- LOGIN CREDENTIALS BOX -->
+        <div style="background:rgba(13,148,136,0.07);border:1px solid rgba(13,148,136,0.25);border-radius:14px;padding:1.2rem 1.5rem;margin:0.5rem 0 1.2rem">
+            <div style="font-family:'Syne',sans-serif;font-weight:700;color:var(--teal-light);margin-bottom:1rem;font-size:0.95rem">
+                🔑 Set Login Credentials
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Login ID *</label>
+                    <input type="text" name="login_id" placeholder="e.g. DOC001" required autocomplete="off">
+                    <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-top:0.3rem">Must be unique. No spaces.</div>
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div style="position:relative">
+                        <input type="text" name="password" id="pwd-field" placeholder="Set a password" required autocomplete="off">
+                        <button type="button" onclick="genPassword()" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:rgba(13,148,136,0.2);border:none;color:var(--teal-light);padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;font-size:0.75rem">Auto</button>
+                    </div>
+                    <div style="font-size:0.78rem;color:rgba(255,255,255,0.35);margin-top:0.3rem">Min 4 characters.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex;gap:1rem;margin-top:0.5rem">
+            <button type="submit" class="btn btn-primary">✅ Register</button>
+            <a href="/admin" class="btn btn-outline">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function genPassword() {
+    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+    let pwd = '';
+    for (let i = 0; i < 8; i++) pwd += chars[Math.floor(Math.random() * chars.length)];
+    document.getElementById('pwd-field').value = pwd;
+}
+</script>
+{% endblock %}

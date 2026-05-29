@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Patient Registration</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Poppins',sans-serif;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:30px;
+            background:
+            linear-gradient(rgba(15,23,42,0.75),rgba(15,23,42,0.75)),
+            url('https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?q=80&w=1600&auto=format&fit=crop');
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+        }
+
+        .main-box{
+            width:100%;
+            max-width:1100px;
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            background:rgba(255,255,255,0.12);
+            backdrop-filter:blur(14px);
+            border-radius:24px;
+            overflow:hidden;
+            box-shadow:0 10px 40px rgba(0,0,0,0.35);
+            border:1px solid rgba(255,255,255,0.15);
+        }
+
+        .left-side{
+            padding:60px 50px;
+            color:white;
+            background:linear-gradient(135deg,#0f766e,#0891b2);
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+        }
+
+        .logo{
+            font-size:42px;
+            margin-bottom:15px;
+        }
+
+        .left-side h1{
+            font-size:38px;
+            line-height:1.2;
+            margin-bottom:18px;
+            font-weight:700;
+        }
+
+        .left-side p{
+            font-size:15px;
+            line-height:1.8;
+            color:rgba(255,255,255,0.9);
+            margin-bottom:30px;
+        }
+
+        .feature-box{
+            background:rgba(255,255,255,0.12);
+            padding:14px 18px;
+            border-radius:12px;
+            margin-bottom:14px;
+            font-size:14px;
+        }
+
+        .right-side{
+            background:white;
+            padding:45px;
+            overflow-y:auto;
+            max-height:95vh;
+        }
+
+        .form-title{
+            font-size:32px;
+            color:#0f172a;
+            margin-bottom:8px;
+            font-weight:700;
+        }
+
+        .sub-title{
+            color:#64748b;
+            margin-bottom:28px;
+            font-size:14px;
+        }
+
+        .input-group{
+            margin-bottom:18px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:7px;
+            color:#0f172a;
+            font-size:14px;
+            font-weight:600;
+        }
+
+        input,
+        select,
+        textarea{
+            width:100%;
+            padding:13px 15px;
+            border:1px solid #cbd5e1;
+            border-radius:12px;
+            font-size:15px;
+            transition:0.3s;
+            background:#f8fafc;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus{
+            outline:none;
+            border-color:#0891b2;
+            box-shadow:0 0 0 4px rgba(8,145,178,0.15);
+            background:white;
+        }
+
+        textarea{
+            min-height:100px;
+            resize:vertical;
+        }
+
+        .grid-2{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:15px;
+        }
+
+        .register-btn{
+            width:100%;
+            border:none;
+            padding:15px;
+            border-radius:14px;
+            background:linear-gradient(135deg,#0f766e,#0891b2);
+            color:white;
+            font-size:16px;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+            margin-top:8px;
+        }
+
+        .register-btn:hover{
+            transform:translateY(-2px);
+            box-shadow:0 10px 20px rgba(15,118,110,0.25);
+        }
+
+        .bottom-text{
+            text-align:center;
+            margin-top:22px;
+            font-size:14px;
+            color:#64748b;
+        }
+
+        .bottom-text a{
+            color:#0f766e;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        @media(max-width:900px){
+
+            .main-box{
+                grid-template-columns:1fr;
+            }
+
+            .left-side{
+                display:none;
+            }
+
+            .right-side{
+                padding:30px 22px;
+            }
+
+            .grid-2{
+                grid-template-columns:1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="main-box">
+
+    <div class="left-side">
+
+        <div class="logo">🏥</div>
+
+        <h1>MediGen-AI<br>Online OPD Portal</h1>
+
+        <p>
+            Register online from home, get AI-based department suggestions,
+            book appointments instantly and manage your digital health records securely.
+        </p>
+
+        <div class="feature-box">🩺 AI Suggested Department & Doctor</div>
+
+        <div class="feature-box">📄 Digital OPD Slip & Prescription</div>
+
+        <div class="feature-box">🧬 ABHA & Ayushman Bharat Support</div>
+
+        <div class="feature-box">💊 Jan Aushadhi & Lab Test Services</div>
+
+    </div>
+
+    <div class="right-side">
+
+        <div class="form-title">Online Patient Registration</div>
+
+        <div class="sub-title">
+            Fill your medical details to create your online patient account.
+        </div>
+         {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div style="
+padding:10px;
+margin-bottom:15px;
+border-radius:5px;
+background-color:#d4edda;
+color:#155724;
+font-weight:bold;
+">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+        <form method="POST">
+
+            <div class="input-group">
+                <label>Full Name</label>
+                <input type="text" name="name" placeholder="Enter Full Name" required>
+            </div>
+
+            <div class="grid-2">
+
+                <div class="input-group">
+                    <label>Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Age</label>
+                    <input type="number" name="age" placeholder="Enter Age">
+                </div>
+
+            </div>
+
+            <div class="grid-2">
+
+                <div class="input-group">
+                    <label>Weight</label>
+                    <input type="number" step="0.1" name="weight" placeholder="Weight in KG">
+                </div>
+
+                <div class="input-group">
+                    <label>Mobile Number</label>
+                    <input type="text" name="mobile" placeholder="Enter Mobile Number"
+                    maxlength="10" minlength="10" pattern="[0-9]{10}"  input="numeric" required>
+                </div>
+
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="Enter Email Address">
+            </div>
+
+            <div class="input-group">
+                <label>ABHA Address</label>
+                <input type="text" name="abha_address" placeholder="Enter ABHA Address">
+            </div>
+            <div class="input-group">
+                <label>Address</label>
+                <input type="text" name="address" placeholder="Enter Address">
+            </div>
+            <div class="input-group">
+    <label>Symptoms</label>
+
+    <div style="display:flex; gap:10px;">
+
+        <textarea
+            id="symptoms"
+            name="symptoms"
+            placeholder="Enter symptoms..."
+            style="min-height:70px;"
+        ></textarea>
+
+        <button
+            type="button"
+            onclick="suggestDoctor()"
+            style="
+                border:none;
+                background:#0891b2;
+                color:white;
+                padding:12px 16px;
+                border-radius:12px;
+                cursor:pointer;
+                font-weight:600;
+            "
+        >
+            AI Suggest
+        </button>
+
+    </div>
+</div>
+
+<div class="grid-2">
+
+    <div class="input-group">
+        <label>Suggested Department</label>
+
+        <input
+            type="text"
+            id="department"
+            readonly
+            placeholder="AI Suggested Department"
+        >
+    </div>
+
+    <div class="input-group">
+        <label>Doctor Type</label>
+
+        <input
+            type="text"
+            id="doctor_type"
+            readonly
+            placeholder="Suggested Doctor"
+        >
+    </div>
+
+</div>
+
+<div class="grid-2">
+
+    <div class="input-group">
+        <label>Create Login ID</label>
+
+        <input
+            type="text"
+            name="login_id"
+            placeholder="Create Login ID"
+            maxlength="10"
+            required
+        >
+    </div>
+
+    <div class="input-group">
+        <label>Create Password</label>
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Create Password"
+            maxlength="10"
+            required
+        >
+    </div>
+
+</div>
+
+<button type="submit" class="register-btn">
+    🩺 Register Online Patient
+</button>
+        </form>
+
+        <div class="bottom-text">
+            Already have an account?
+            <a href="{{ url_for('online_login') }}">
+    Login Here
+</a>
+                <p>
+                    <a href="/online-login">
+                        ⬅ Back To Home
+                    </a>
+                </p>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+
+function suggestDoctor(){
+
+    let symptoms =
+    document.getElementById('symptoms').value.toLowerCase();
+
+    let department = "General Medicine";
+    let doctor = "MBBS Doctor";
+
+    if(symptoms.includes('heart') || symptoms.includes('chest')){
+        department = "Cardiology";
+        doctor = "Cardiologist";
+    }
+
+    else if(symptoms.includes('skin') || symptoms.includes('allergy')){
+        department = "Dermatology";
+        doctor = "Skin Specialist";
+    }
+
+    else if(symptoms.includes('eye')){
+        department = "Ophthalmology";
+        doctor = "Eye Specialist";
+    }
+
+    else if(symptoms.includes('bone') || symptoms.includes('joint')){
+        department = "Orthopedic";
+        doctor = "Orthopedic Doctor";
+    }
+
+    else if(symptoms.includes('child') || symptoms.includes('baby')){
+        department = "Pediatrics";
+        doctor = "Child Specialist";
+    }
+
+    document.getElementById('department').value = department;
+
+    document.getElementById('doctor_type').value = doctor;
+}
+
+</script>
+</body>
+</html>
