@@ -2,6 +2,7 @@
 **A Secure Hybrid Healthcare Portal with Rule-Based Smart Prescription & E-Pharmacy Integration**
 
 MCA Project | Ravi Ranjan Kumar | Aryabhatta Knowledge University, Patna|
+
 Guided by Dr. Amit Shukla Sir
 ---
 
