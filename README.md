@@ -120,4 +120,7 @@ mediGen-AI/
 ├─ app.py
 ├─ README.md
 └─ requirements.txt
+ 
 
+online Hosting through Render
+https://medige-ai.onrender.com
